@@ -83,7 +83,7 @@ msgstr ""
 
 #: ckanext/restricted/logic.py:140
 msgid "Access granted to resource {}"
-msgstr "Accès autorisée à la ressource {}"
+msgstr "Accès autorisé à la ressource {}"
 
 #: ckanext/restricted/templates/package/snippets/resource_item.html:14
 msgid "Unauthorized"
