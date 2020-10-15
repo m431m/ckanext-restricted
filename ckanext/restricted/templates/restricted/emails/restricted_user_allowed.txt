@@ -1,15 +1,19 @@
-{% trans %}Dear{% endtrans %} {{ user_name }},
+Cher {{ user_name }},
 
-{% trans %}You have requested access on {{ site_title }} to the resource: {{ resource_name }}.{% endtrans %}
-{% trans %}The contact person of the package has granted you access.{% endtrans %}
+Vous avez demandé l'accès sur {{ site_title }} à la ressource : {{ resource_name }}.
+La personne contactée a validé votre accès.
 
-{% trans %}Please click the following link: {{ resource_link }}{% endtrans %}
+Il est nécessaire au préalable de vous connecter à la plateforme {{ site_title }} à partir de cette adresse :
+{{ login_url }}
+(saisir votre login et votre mot de passe)
 
-{% trans %}Best regards,{% endtrans %}
-{% trans %}{{ site_title }} Administrator{% endtrans %}
+Ensuite, vous pouvez accéder à la ressource via ce lien : {{ resource_link }}.
+
+Cordialement,
+
+Administrateur {{ site_title }}
 
 
-{% trans %}This is an automatically generated e-mail, please do not reply to it.{% endtrans %}
+Ceci est un message automatique. Merci de ne pas y répondre.
 
-{% trans %}Message sent from {{ site_title }} ({{ site_url }}){% endtrans %}
-
+Message envoyé par {{ site_title }} ({{ site_url }})

@@ -1,6 +1,8 @@
 # coding: utf8
 
 from __future__ import unicode_literals
+from urlparse import urljoin
+
 import ckan.authz as authz
 from ckan.common import _
 
@@ -125,6 +127,7 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
         'msg': ('Resource access restricted to same '
                 'organization ({}) members').format(pkg_organization_id)}
 
+
 def restricted_mail_allowed_user(user_id, resource):
     log.debug('restricted_mail_allowed_user: Notifying "{}"'.format(user_id))
     try:
@@ -151,25 +154,32 @@ def restricted_mail_allowed_user(user_id, resource):
             'Fwd: {}'.format(mail_subject), mail_body)
 
     except Exception as e:
-        log.warning(('restricted_mail_allowed_user: '
-                     'Failed to send mail to "{0}": {1}').format(user_id,e))
+        log.error(e)
+        log.warning("restricted_mail_allowed_user: Failed to send mail to user '%s'" % user_id)
 
 
 def restricted_allowed_user_mail_body(user, resource):
-    resource_link = toolkit.url_for(
-        controller='package', action='resource_read',
-        id=resource.get('package_id'), resource_id=resource.get('id'))
+
+    site_url = config.get('ckan.site_url')
+    login_url = urljoin(
+        site_url, toolkit.url_for(controller='user', action='login'))
+    resource_link = urljoin(
+        site_url, toolkit.url_for(
+            controller='package', action='resource_read',
+            id=resource.get('package_id'), resource_id=resource.get('id')))
 
     extra_vars = {
+        'login_url': login_url,
         'site_title': config.get('ckan.site_title'),
-        'site_url': config.get('ckan.site_url'),
+        'site_url': site_url,
         'user_name': user.get('display_name', user['name']),
         'resource_name': resource.get('name', resource['id']),
-        'resource_link': config.get('ckan.site_url') + resource_link,
+        'resource_link': resource_link,
         'resource_url': resource.get('url')}
 
     return render_jinja2(
         'restricted/emails/restricted_user_allowed.txt', extra_vars)
+
 
 def restricted_notify_allowed_users(previous_value, updated_resource):
 
