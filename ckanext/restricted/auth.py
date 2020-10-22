@@ -33,5 +33,7 @@ def restricted_resource_show(context, data_dict=None):
         package = model.Package.get(resource.get('package_id'))
         package = package.as_dict()
 
-    return (logic.restricted_check_user_resource_access(
+    authorized = (logic.restricted_check_user_resource_access(
         user_name, resource, package))
+
+    return authorized

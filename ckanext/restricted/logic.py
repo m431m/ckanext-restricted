@@ -36,7 +36,11 @@ def restricted_get_username_from_context(context):
 
 
 def restricted_get_restricted_dict(resource_dict):
-    restricted_dict = {'level': 'public', 'allowed_users': []}
+    restricted_dict = {
+        'level': 'public',
+        'allowed_users': [],
+        'allowed_groups': [],
+        }
 
     # the ckan plugins ckanext-scheming and ckanext-composite
     # change the structure of the resource dict and the nature of how
@@ -60,9 +64,13 @@ def restricted_get_restricted_dict(resource_dict):
             allowed_users = restricted.get('allowed_users', '')
             if not isinstance(allowed_users, list):
                 allowed_users = allowed_users.split(',')
+            allowed_groups = restricted.get('allowed_groups', '')
+            if not isinstance(allowed_users, list):
+                allowed_groups = allowed_groups.split(',')
             restricted_dict = {
                 'level': restricted_level,
-                'allowed_users': allowed_users}
+                'allowed_users': allowed_users,
+                'allowed_groups': allowed_groups}
 
     return restricted_dict
 
@@ -72,6 +80,7 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
 
     restricted_level = restricted_dict.get('level', 'public')
     allowed_users = restricted_dict.get('allowed_users', [])
+    allowed_groups = restricted_dict.get('allowed_groups', [])
 
     # Public resources (DEFAULT)
     if not restricted_level or restricted_level == 'public':
@@ -94,11 +103,24 @@ def restricted_check_user_resource_access(user, resource_dict, package_dict):
             'success': False,
             'msg': 'Resource access restricted to allowed users only'}
 
+    # Only group member:
+    if restricted_level == 'only_group_member':
+        user_id = authz.get_user_id_for_username(user, allow_none=True)
+        for group in allowed_groups:
+            members = logic.get_action('member_list')({}, {'id': group})
+            if user_id in [member[0] for member in members]:
+                return {'success': True}
+        return {
+            'success': False,
+            'msg': "Resource access restricted to members of following groups: '%s'." % "', '".join(allowed_groups)}
+
     # Get organization list
     user_organization_dict = {}
 
     context = {'user': user}
     data_dict = {'permission': 'read'}
+
+    user_id = authz.get_user_id_for_username(user, allow_none=True)
 
     for org in logic.get_action('organization_list_for_user')(context, data_dict):
         name = org.get('name', '')
