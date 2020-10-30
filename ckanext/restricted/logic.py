@@ -183,8 +183,14 @@ def restricted_mail_allowed_user(user_id, resource):
 def restricted_allowed_user_mail_body(user, resource):
 
     site_url = config.get('ckan.site_url')
-    login_url = urljoin(
-        site_url, toolkit.url_for(controller='user', action='login'))
+
+    alternate_login_url = config.get('ckanext.restricted.alternate_login_url')
+    if not alternate_login_url:
+        login_url = urljoin(
+            site_url, toolkit.url_for(controller='user', action='login'))
+    else:
+        login_url = alternate_login_url
+
     resource_link = urljoin(
         site_url, toolkit.url_for(
             controller='package', action='resource_read',
