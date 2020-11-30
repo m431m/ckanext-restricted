@@ -159,6 +159,7 @@ def restricted_package_search(context, data_dict):
 #         restricted_resources_list += [restricted_resource]
 #     return restricted_resources_list
 
+
 def _restricted_resource_list_hide_fields(context, resource_list):
     restricted_resources_list = []
     for resource in resource_list:
@@ -188,10 +189,10 @@ def _restricted_resource_list_hide_fields(context, resource_list):
                         allowed_users.append(user_name)
                     else:
                         allowed_users.append(user[0:3] + '*****' + user[-2:])
-
             new_restricted = json.dumps({
-                'level': restricted_dict.get("level"),
-                'allowed_users': ','.join(allowed_users)})
+                'level': restricted_dict.get('level'),
+                'allowed_users': ','.join(allowed_users),
+                'allowed_groups': restricted_dict.get('allowed_groups')})
             extras_restricted = resource.get('extras', {}).get('restricted', {})
             if (extras_restricted):
                 restricted_resource['extras']['restricted'] = new_restricted
