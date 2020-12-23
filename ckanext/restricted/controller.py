@@ -91,7 +91,7 @@ class RestrictedController(toolkit.BaseController):
 
             # CC doesn't work and mailer cannot send to multiple addresses
             for email, name in email_dict.iteritems():
-                if config.get('ckanext.restricted.enable_send_mail', True):
+                if config.getboolean('ckanext.restricted.enable_send_mail', True):
                     mailer.mail_recipient(name, email, subject, body, headers)
 
             # Special copy for the user (no links)
@@ -108,7 +108,7 @@ class RestrictedController(toolkit.BaseController):
                 'request mail sent. \n\n >> {}'
             ).format(body.replace("\n", "\n >> "))
 
-            if config.get('ckanext.restricted.enable_send_mail', True):
+            if config.getboolean('ckanext.restricted.enable_send_mail', True):
                 mailer.mail_recipient(
                     name, email, 'Fwd: ' + subject, body_user, headers)
             success = True

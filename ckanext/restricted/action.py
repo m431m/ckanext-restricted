@@ -63,7 +63,7 @@ def restricted_user_create_and_notify(context, data_dict):
         body = render_jinja2(
             'restricted/emails/restricted_user_registered.txt', extra_vars)
 
-        if config.get('ckanext.restricted.enable_send_mail', True):
+        if config.getboolean('ckanext.restricted.enable_send_mail', True):
             mail_recipient(name, email, subject, body)
 
     except MailerException as mailer_exception:
