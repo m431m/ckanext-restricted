@@ -1,10 +1,19 @@
 # coding: utf8
 
 from __future__ import unicode_literals
+
 from ckan.lib.plugins import DefaultTranslation
 import ckan.logic
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
+
+try:
+    # CKAN 2.7 and later
+    from ckan.common import config
+except ImportError:
+    # CKAN 2.6 and earlier
+    from pylons import config
+
 from ckanext.restricted import action
 from ckanext.restricted import auth
 from ckanext.restricted import helpers
@@ -65,4 +74,6 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
 
     def after_update(self, context, resource):
         previous_value = context.get('__restricted_previous_value')
-        logic.restricted_notify_allowed_users(previous_value, resource)
+        if config.get('ckanext.restricted.enable_send_mail', True):
+            if config.get('ckanext.restricted.notify_allowed_users', True):
+                logic.restricted_notify_allowed_users(previous_value, resource)
