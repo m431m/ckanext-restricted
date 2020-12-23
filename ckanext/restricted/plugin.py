@@ -1,6 +1,7 @@
 # coding: utf8
 
 from __future__ import unicode_literals
+from paste.deploy.converters import asbool
 
 from ckan.lib.plugins import DefaultTranslation
 import ckan.logic
@@ -74,6 +75,6 @@ class RestrictedPlugin(plugins.SingletonPlugin, DefaultTranslation):
 
     def after_update(self, context, resource):
         previous_value = context.get('__restricted_previous_value')
-        if config.getboolean('ckanext.restricted.enable_send_mail', True):
-            if config.getboolean('ckanext.restricted.notify_allowed_users', True):
+        if asbool(config.get('ckanext.restricted.enable_send_mail', True)):
+            if asbool(config.get('ckanext.restricted.notify_allowed_users', True)):
                 logic.restricted_notify_allowed_users(previous_value, resource)

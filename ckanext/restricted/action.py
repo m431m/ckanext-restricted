@@ -1,9 +1,10 @@
 # coding: utf8
 
 from __future__ import unicode_literals
+from paste.deploy.converters import asbool
+
 import ckan.authz as authz
 from ckan.common import _
-
 from ckan.lib.base import render_jinja2
 from ckan.lib.mailer import mail_recipient
 from ckan.lib.mailer import MailerException
@@ -63,7 +64,7 @@ def restricted_user_create_and_notify(context, data_dict):
         body = render_jinja2(
             'restricted/emails/restricted_user_registered.txt', extra_vars)
 
-        if config.getboolean('ckanext.restricted.enable_send_mail', True):
+        if asbool(config.get('ckanext.restricted.enable_send_mail', True)):
             mail_recipient(name, email, subject, body)
 
     except MailerException as mailer_exception:

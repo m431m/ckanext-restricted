@@ -1,6 +1,7 @@
 # coding: utf8
 
 from __future__ import unicode_literals
+from paste.deploy.converters import asbool
 from urlparse import urljoin
 
 import ckan.authz as authz
@@ -167,7 +168,7 @@ def restricted_mail_allowed_user(user_id, resource):
         mail_body = restricted_allowed_user_mail_body(user, resource)
         mail_subject = _('Access granted to resource {}').format(resource_name)
 
-        if config.getboolean('ckanext.restricted.enable_send_mail', True):
+        if asbool(config.get('ckanext.restricted.enable_send_mail', True)):
             # Send mail to user
             mailer.mail_recipient(user_name, user_email, mail_subject, mail_body)
             # Send copy to admin

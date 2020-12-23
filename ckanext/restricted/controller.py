@@ -1,6 +1,8 @@
 # coding: utf8
 
 from __future__ import unicode_literals
+from paste.deploy.converters import asbool
+
 from ckan.common import _
 from ckan.common import request
 import ckan.lib.base as base
